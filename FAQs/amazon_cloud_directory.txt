@@ -1,0 +1,143 @@
+General
+
+Q: What is Amazon Cloud Directory?
+
+Amazon Cloud Directory is a cloud-native, highly scalable, high-performance, multi-tenant directory service that provides web-based directories to make it easy for you to organize and manage all your application resources such as users, groups, locations, devices, and policies, and the rich relationships between them. Cloud Directory is a foundational building block for developers to create directory-based solutions easily and without having to worry about deployment, global scale, availability, and performance.
+
+Unlike existing traditional directory systems, Cloud Directory does not limit organizing directory objects in a single fixed hierarchy. In Cloud Directory, you can organize directory objects into multiple hierarchies to support multiple organizational pivots and relationships across directory information. For example, a directory of users may provide a hierarchical view based on reporting structure, location, and project affiliation. Similarly, a directory of devices may have multiple hierarchical views based on its manufacturer, current owner, and physical location.
+
+Cloud Directory provides virtually unlimited directories. It scales each directory to hundreds of millions of nodes automatically while offering consistent performance. Cloud Directory is optimized for a high rate of low-latency, eventually consistent reads. Developers model directory objects using extensible schemas to enforce data correctness constraints automatically and to make it easier to program against. Cloud Directory offers rich information lookup based on customer-defined indexed attributes, thus enabling fast tree traversals and searches within the directory trees. Cloud Directory data is encrypted at rest and in transit.
+
+Q: What are the important characteristics of Amazon Cloud Directory?
+
+Important characteristics include:
+
+Support for the multi-hierarchical organization of information to capture rich relationships between entities.
+
+Optimization for fast lookups and searches to retrieve values.
+
+Support of a high rate of eventually consistent read operations.
+
+Extensible object schema support to simplify application development and ease interoperability across multiple applications interacting with common directory information.
+
+Seamless scaling to millions of objects and classifications.
+
+The ability to define various types of application-specific policies on directory objects.
+
+Encryption at rest and in transit.
+
+Q: What are core use cases for Cloud Directory?
+
+Customers can use Cloud Directory to build applications such as IoT device registries, social networks, network configurations, and user directories. Each of these use cases typically needs to organize data hierarchically, perform high-volume and low-latency lookups, and scale to hundreds of millions of objects with global availability.
+
+Q: What kind of customers can use Cloud Directory?
+
+Customers of all sizes can use Amazon Cloud Directory to build directory-based applications easily.
+
+Q: When should I use Amazon Neptune and Amazon Cloud Directory?
+
+Neptune is a fast, reliable, fully-managed graph database service that makes it easy to build and run applications that work with highly connected datasets. The core of Neptune is a purpose-built, high-performance graph database engine optimized for storing billions of relationships and querying the graph with milliseconds latency. Neptune supports popular graph models Property Graph and W3C's RDF, and their respective query languages Apache TinkerPop Gremlin and SPARQL, allowing you to easily build queries that efficiently navigate highly connected datasets.
+
+Neptune is optimized to support graph applications that require high throughput and low latency graph queries. With support for up to 15 read replicas, Neptune can support 100,000s of queries per second. Neptune is durable and ACID with immediate consistency and can store graphs of up to 64 TB. Customers can use Neptune to build applications such as recommendation engines, fraud detection, knowledge graphs, drug discovery, and network security.
+
+Cloud Directory is a high-performance, fully-managed, hierarchical datastore. Cloud Directory is a highly scalable multi-tenant service that makes it easy for customers to organize and manage all their multi-dimensional data such as users, groups, locations, and devices and the rich relationships between them.
+
+Cloud Directory is optimized for multi-dimensional, hierarchical data. Customers can build different dimensions of data using Schema facets to define the objects within these dimensions (such as employees, devices, locations). Cloud Directory has algorithms and APIs that are purpose built to traverse these hierarchies and collect information along the paths in an efficient manner. Other characteristics are high read to write ratio and data sets with low amount of storage. Cloud Directory is targeted for use cases such as human resources applications, course catalogs, device registry and network topology. Additionally, customer applications that need fine-grained permissions (Authorization) are well suited to leverage capabilities in Cloud Directory.
+
+Q: How is Cloud Directory different than traditional directories?
+
+Amazon Cloud Directory is a foundational service for developers to build cloud-native directories for hundreds of millions of objects and relationships. It provides the necessary APIs for you to create a directory with a schema, add objects and relationships, and attach policies to those objects and relationships.
+
+Traditional LDAP-based directories are designed as IT tools for organizations to manage users and devices. They provide authentication and policy frameworks, but lack the scalability to manage hundreds of millions of objects and relationships. Traditional directories are optimized for IT use cases, not for developers building cloud, mobile, and IoT applications.
+
+Q: When should I use Cloud Directory versus AWS Directory Service for Microsoft Active Directory (Enterprise Edition) or Amazon Cognito User Pools?
+
+AWS Directory Service for Microsoft Active Directory (Enterprise Edition), or AWS Microsoft AD, is designed to support Windows-based workloads that require Microsoft Active Directory. AWS Microsoft AD is intended for enterprise IT use cases and applications that depend on Microsoft Active Directory.
+
+Amazon Cognito User Pools is an identity solution for developers that need authentication, federation, and credentials management for users.
+
+Amazon Cloud Directory is designed for developers who need to manage large volumes of hierarchical data, and need a flexible directory solution that supports multiple sets of relationships and built-in data validation.
+Core Concepts
+
+Q: What are the key terms and concepts that I need to be aware of to use Amazon Cloud Directory?
+
+To use Amazon Cloud Directory, you need to know the following key terms:
+
+Directory
+Schema
+Facet
+Object
+Attribute
+Hierarchy
+Policy
+
+Q: What is a directory?
+
+A directory defines the scope for the data store (like a table in Amazon DynamoDB), completely isolating it from all other directories in the service. It also defines the transaction scope, query scope, and the like. A directory also represents the root object for a customer’s tree and can have multiple directory objects as its children. Customers must apply schemas at the directory level.
+
+Q: What is a schema?
+
+A schema defines facets, attributes, and constraints allowed within a directory. This includes defining:
+
+One or more types of facets that may be contained within a directory (such as Person, Organization_Person).
+
+Attributes required or allowed on various types of facets.
+
+Constraints (such as required or unique, primitive data types such as integer, string, and others).
+
+Q: What is a facet?
+
+A facet is a collection of attributes and constraints. A single or multiple facets when combined help define the objects in a directory. For example, Person and Device can be facets that define corporate employees with the associations of multiple devices.
+
+Q: What is an object?
+
+An object represents a structured data entity in a directory. An object in a directory is intended to capture metadata about a physical or logical entity, usually for the purpose of information discovery and enforcing policies. For example, users, devices, and applications are all types of objects. An object’s structure and type information are expressed using a collection of facets.
+
+Q: What is an attribute?
+
+An attribute is a user-defined unit of metadata associated with an object. For example, the user object can have an attribute called email-address. Attributes are always associated with an object.
+
+Q: What is a hierarchy?
+
+A hierarchy is a view in which groups and objects are organized in parent-child relationships similar to a file system in which folders have files and subfolders beneath them. Amazon Cloud Directory supports organizing objects into multiple hierarchies.
+
+Q: What is a policy?
+
+A policy is a specialized object type with attributes that define the type of policy and policy document. A policy can be attached to objects or the root of a hierarchy. By default, objects inherit policies from their parents. Amazon Cloud Directory does not interpret policies.
+
+
+
+
+Setup
+
+Q: How do I provision a new directory in Amazon Cloud Directory?
+
+You can provision a new directory in Amazon Cloud Directory with the following steps:
+
+Sign in to any of your AWS accounts with privileges to manage Cloud Directory.
+Open the AWS Management Console and navigate to the Amazon Cloud Directory console.
+Click Create New Directory.
+Provide a name for your new directory.
+Select a predefined schema, or create a new schema for your directory.
+After you have created the new directory, you can use the Amazon Cloud Directory APIs to start populating your container with objects that comply with the associated schema. If you have a single directory, you can start populating the directory with the objects based on schemas and facets you choose (such as products for a product catalog). If you have multiple directories of different entities, you can create a root node for each entity directory and then start populating your directory (such as user and device as two types of directories that you can build in one directory).
+You can also use the AWS Command Line Interface (CLI) to perform the same steps to create a new Amazon Cloud Directory container. Amazon Cloud Directory provides an SDK to create, read, delete, and update directories programmatically.
+Schemas
+
+Q: How do I create and manage schemas?
+
+Amazon Cloud Directory provides an SDK and CLI to create, read, and update schemas. Cloud Directory also supports uploading a compliant JSON file to create a schema. You can also create and manage schemas using the Cloud Directory console.
+
+Q: Does Amazon Cloud Directory provide any sample schemas?
+
+Yes, currently Amazon Cloud Directory provides the following sample schemas:
+
+Organization
+Person (User)
+Device
+APIs
+
+Q: What are eventually consistent and strongly consistent read operations in Cloud Directory?
+
+Amazon Cloud Directory is a distributed directory store. This means that data is distributed to multiple servers in different Availability Zones.
+
+When reading data from Cloud Directory, you must specify either an eventually consistent or strongly consistent read type operation. The read type is based on consistency level. The two consistency levels are EVENTUAL for eventually consistent reads and SERIALIZABLE for strongly consistent reads. For more information, see Consistency Levels.

@@ -4,6 +4,7 @@ from lxml import html
 import re
 import requests
 
+
 # Amazon has several page structures. While pages my appear visually the same,
 # there are different schemas within the HTML tags.
 class RegEx(Enum):
@@ -15,6 +16,7 @@ class RegEx(Enum):
     Q_LBRTXT = '(^Q(:|\.).*\?)'
     A_LBRTXT = '(.*)'
 
+
 class AWSPage(Enum):
     Parsys = "//div[@class='parsys content']/div/div[@class='  ']/p"
     RTXT = "//div[@class='lb-txt-16 lb-rtxt']"
@@ -24,8 +26,9 @@ class AWSPage(Enum):
     def list():
         return list(map(lambda c: c.value, AWSPage))
 
+
 faq_dict = {
-    'Amazon API Gateway': 'https://aws.amazon.com/api-gateway/faqs/', # expand/collapse
+    'Amazon API Gateway': 'https://aws.amazon.com/api-gateway/faqs/',  # expand/collapse
     'Amazon Athena': 'https://aws.amazon.com/athena/faqs/',
     'Amazon Certificate Manager': 'https://aws.amazon.com/certificate-manager/faqs/',
     'Amazon Cloud Directory': 'https://aws.amazon.com/cloud-directory/faqs/',
@@ -76,20 +79,22 @@ faq_dict = {
     'Elastic Load Balancing': 'https://aws.amazon.com/elasticloadbalancing/faqs/',
 }
 
+
 # directs traffic to appropriate method depending on the response
 def extract_elements(rtxt, lbrtxt, parsys):
-    if (len(rtxt) > 0):
+    if len(rtxt) > 0:
         print("{} has {} elements for RTXT".format(key, len(rtxt)))
         parse_rtxt(rtxt)
-    elif (len(parsys) > 0):
+    elif len(parsys) > 0:
         print("{} has {} elements for Parsys".format(key, len(parsys)))
         parse_parsys(parsys)
-    elif (len(lbrtxt) > 0):
+    elif len(lbrtxt) > 0:
         print("{} has {} elements for LBRTXT".format(key, len(lbrtxt)))
         parse_lbrtxt(lbrtxt)
     else:
         # line to catch unaddressed cases. all cases presently addressed.
         print("NEEDS WORK: {} has no elements.".format(key))
+
 
 # takes an rtxt element and returns a comma delimited string of question and answer
 def parse_rtxt(rtxt):
@@ -109,6 +114,7 @@ def parse_rtxt(rtxt):
         lines.append(line_to_store)
     return lines
 
+
 # takes a parsys element and returns a comma delimited string of question and answer
 def parse_parsys(parsys):
     lines = []
@@ -127,6 +133,7 @@ def parse_parsys(parsys):
         lines.append(line_to_store)
     return lines
 
+
 # Major PITA. Order matters.
 # Elements are <p>  and <ul> tags that are children of div<class="lb-rtxt">
 # Order is top to bottom.
@@ -134,7 +141,7 @@ def parse_parsys(parsys):
 # 2. if Q:, classify as question
 # 3. while not Q:, append to answer
 # 4. save as a delimited Q & A string
-# 5. return them all once you've looped thru them
+# 5. return them all once you've looped through them
 # TODO refactor this to be less complex. Should be O(n), not O(n^2)
 def parse_lbrtxt(lbrtxt):
     # create a landing spot to hang onto the lines extracted from the lbrtxt object
@@ -177,6 +184,7 @@ def parse_lbrtxt(lbrtxt):
     # print(debug_string)
     return lines_to_return
 
+
 for key in faq_dict.keys():
     url = faq_dict[key]
     page = requests.get(url)
@@ -184,4 +192,4 @@ for key in faq_dict.keys():
     rtxt_elements = source_code.xpath(AWSPage.RTXT.value)
     lbrtxt_elements = source_code.xpath(AWSPage.LBRTXT.value)
     parsys_elements = source_code.xpath(AWSPage.Parsys.value)
-    extract_elements(rtxt_elements,lbrtxt_elements,parsys_elements)
+    extract_elements(rtxt_elements, lbrtxt_elements, parsys_elements)

@@ -84,7 +84,7 @@ def extract_elements(rtxt, lbrtxt, parsys):
     elif (len(parsys) > 0):
         print("{} has {} elements for Parsys".format(key, len(parsys)))
         parse_parsys(parsys)
-    # elif (len(lbrtxt) > 0):
+    elif (len(lbrtxt) > 0):
         print("{} has {} elements for LBRTXT".format(key, len(lbrtxt)))
         parse_lbrtxt(lbrtxt)
     else:

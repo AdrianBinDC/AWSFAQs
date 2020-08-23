@@ -1,19 +1,20 @@
-import requests
+from enum import Enum
 from lxml import html
 from lxml import etree
-from enum import Enum
 import re
+import requests
 
-
-
+# Amazon has several page structures. While pages my appear visually the same,
+# there are different schemas within the HTML tags.
 class RegEx(Enum):
     QandA = "(Q:.*?\n)(?!Q:)([\s\S]+?(?=^Q:|\Z))"
     Question = "(Q(:|\.).*?)</b></p>"
     Answers = "<p>(?!.*Q:)(.*?)</p>"
+    QandAParsys = '^(Q(:|\.).*\?)([\s\S]+?(?=^Q:|\Z))'
 
 
 class AWSPage(Enum):
-    Parsys = "//div[@class='parsys content']"
+    Parsys = "//div[@class='parsys content']/div/div[@class='  ']/p"
     RTXT = "//div[@class='lb-txt-16 lb-rtxt']"
     LBRTXT = "//div[@class='lb-rtxt']"
 
@@ -30,7 +31,7 @@ faq_dict = {
     # 'Amazon Cloudfront': 'https://aws.amazon.com/cloudfront/faqs/',
     # 'Amazon CloudTrail': 'https://aws.amazon.com/cloudtrail/faqs/',  # expand/collapse
     # 'Amazon CloudWatch': 'https://aws.amazon.com/cloudwatch/faqs/',
-    # 'Amazon Cognito': 'https://aws.amazon.com/cognito/faqs/',  # done
+    'Amazon Cognito': 'https://aws.amazon.com/cognito/faqs/',  # done
     # 'Amazon EBS': 'https://aws.amazon.com/ebs/faqs/',
     # 'Amazon EFS': 'https://aws.amazon.com/efs/faq/',
     # 'Amazon Elastic MapReduce': 'https://aws.amazon.com/elasticmapreduce/faqs/',
@@ -41,7 +42,7 @@ faq_dict = {
     # 'Amazon Macie': 'https://aws.amazon.com/macie/faq/',
     # 'Amazon Redshift': 'https://aws.amazon.com/redshift/faqs/',
     # 'Amazon Route 53': 'https://aws.amazon.com/route53/faqs/',
-    'Amazon S3': 'https://aws.amazon.com/s3/faqs/',
+    # 'Amazon S3': 'https://aws.amazon.com/s3/faqs/',
     # 'Amazon Single Sign-On': 'https://aws.amazon.com/single-sign-on/faqs/',
     # 'Amazon VPC': 'https://aws.amazon.com/vpc/faqs/',
     # 'AWS Aurora': 'https://aws.amazon.com/rds/aurora/faqs/',
@@ -74,6 +75,7 @@ faq_dict = {
     # 'Elastic Load Balancing': 'https://aws.amazon.com/elasticloadbalancing/faqs/',
 }
 
+
 # TODO method to parse regex
 
 # TODO method to parse the array of HTML elements
@@ -82,13 +84,15 @@ def extract_elements(rtxt, lbrtxt, parsys):
         print("{} has {} elements for RTXT".format(key, len(rtxt)))
         parse_rtxt(rtxt)
         # continue
-    # elif (len(parsys) > 0):
-    #     print("{} has {} elements for Parsys".format(key, len(parsys)))
-    #     # continue
+    elif (len(parsys) > 0):
+        print("{} has {} elements for Parsys".format(key, len(parsys)))
+        parse_parsys(parsys)
+        # continue
     # elif (len(lbrtxt) > 0):
     #     print("{} has {} elements for LBRTXT".format(key, len(lbrtxt)))
     #     # continue
     else:
+        # line to catch unaddressed cases. all cases presently addressed.
         print("NEEDS WORK: {} has no elements.".format(key))
 
 
@@ -97,21 +101,39 @@ def parse_rtxt(rtxt):
     lines = []
     for element in rtxt:
         html_element = etree.tostring(element, encoding=str)
-        question_string = ""
-        q_match = re.search(RegEx.Question.value,html_element, re.UNICODE)
+        q = ""
+        q_match = re.search(RegEx.Question.value, html_element)
         if q_match:
-            question_string = q_match.group(0)
-        answer_string = ""
-        answer_matches = re.findall(RegEx.Answers.value,html_element,re.UNICODE)
+            q = q_match.group(0)
+        a = ""
+        answer_matches = re.findall(RegEx.Answers.value, html_element)
         for match in answer_matches:
-            answer_string = answer_string + "\n" + match
-        lines.append("{}, {}".format(question_string, answer_string))
-    print(len(lines))
+            a = a + "\n" + match
+        line_to_store = "{}, {}".format(q, a)
+        print(line_to_store)
+        lines.append(line_to_store)
     return lines
 
-# once script is written, decompose it to separate concerns
+# takes a parsys element and returns a comma delimited string of question and answer
+def parse_parsys(parsys):
+    lines = []
+    for element in parsys:
+        text_contents = element.text_content()
+        print(text_contents)
+        question = re.search(RegEx.QandAParsys.value, text_contents, re.M)
+        q = ""
+        a = ""
+
+        if question:
+            q = question.group(1)
+            a = question.group(3)
+        line_to_store = '{}, {}'.format(q, a)
+        print(line_to_store)
+        lines.append(line_to_store)
+    return lines
 
 keys = faq_dict.keys()
+
 for key in faq_dict.keys():
     url = faq_dict[key]
     page = requests.get(url)
